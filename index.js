@@ -102,12 +102,14 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
 // 	}
 // })
 
-app.post('api/v1/users/getUser' , async (req,res) => {
+app.post('/api/v1/users/getUser' , async (req,res) => {
 	console.log("searching for user");
 	const address = req.body.walletAddress
 
 	try{
 		const data = await model.find({ walletAddress : address})
+		res.send(data);
+		console.log("wallet and syrup count found");
 	}catch(e){
 		console.log("Failed to retrieve the Syrup Count: " + e);
 	}
