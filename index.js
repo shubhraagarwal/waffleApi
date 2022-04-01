@@ -4,12 +4,12 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const app = express();
 const port = 1337; // PORT dekh-liyo
-const model = require('./model.model') ; // MODEL KO LINK KRNA
+const model = require('./model.model') ; 
 const cors = require('cors')
 const cron = require("node-cron");
 const schedule = require('node-schedule');
 
-mongoose.connect('mongodb://localhost:27017/tester', {
+mongoose.connect('mongodb+srv://waffleAdmin:waffle@cluster0.pfylc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.hour = 1;
+rule.second = 1;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
