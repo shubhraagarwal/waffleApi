@@ -38,12 +38,21 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.hour = 0;
+rule.hour = 1;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
-	winners = await  model.find( {won : false})
-	console.log(winners);
+	winners = await  model.find( {won : false}).limit(10)
+
+	console.log(winners[0]._id);
+
+	// winners.map(x => {
+	// 	await model.updateOne(
+	// 		{ _id: x._id },
+	// 		{ $set: { won: true } }
+	// 	)
+	// })
+
 });
 
 
