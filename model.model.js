@@ -4,8 +4,8 @@ const User = new mongoose.Schema(
 	{
 		walletAddress: { type: String, required: true, unique: true },
 		discord_id: { type: String},
-		syrups: { type: String},
-		quote: { type: String },
+		syrups: { type: Number, default: 0},
+		won: {type: Boolean, default: false},
 	},
 	{ collection: 'shubhraBhaiKaData' }
 )

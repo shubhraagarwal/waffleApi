@@ -6,6 +6,8 @@ const app = express();
 const port = 1337; // PORT dekh-liyo
 const model = require('./model.model') ; // MODEL KO LINK KRNA
 const cors = require('cors')
+const cron = require("node-cron");
+const schedule = require('node-schedule');
 
 mongoose.connect('mongodb://localhost:27017/tester', {
     useNewUrlParser: true,
@@ -34,6 +36,17 @@ app.get('/', (req, res) => {
 
 
 
+let winners = null;
+const rule = new schedule.RecurrenceRule();
+rule.second = 1;
+rule.tz = 'Etc/UTC';
+schedule.scheduleJob(rule, async function(){
+	console.log("node-schedule working");
+	winners = await  model.find( {won : false})
+	console.log(winners);
+});
+
+
 // Creating account
 app.post('/api/v1/users/addUser' , async (req,res) =>{
     console.log(req.body)
@@ -55,10 +68,10 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     try{
         const wallet = req.body.walletAddress
         const disc_id = req.body.discordid
-        await model.updateOne(
-			{ walletAddress: wallet },
-			{ $set: { discord_id: disc_id } }
-		)
+        await model.create({
+			walletAddress : wallet,
+			discord_id: disc_id
+		})
 		res.json({ code: '200' , status: 'ok' , id: disc_id })
     }
     catch(err){
@@ -92,8 +105,12 @@ app.post('api/v1/users/getUser' , async (req,res) => {
 })
 
 // Winner Selection
-app.get('/api/v1/fetchWinner', async (req,res) => {
-
+app.get('/api/v1/users/getAllWinner', async (req,res) => {
+	if(winners === null){
+		res.json(null)
+	}else{
+		res.send(winners);
+	}
 })
 
 app.listen(port);
