@@ -123,6 +123,28 @@ app.get('/api/v1/users/getAllWinner', async (req,res) => {
 		res.send(winners);
 	}
 })
+ 
+app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
+	console.log("adding 8 to syrup count");
+	const walletAdd = req.body.walletAddress;
+	const entryTime = req.body.entryTime;
+
+	try{
+	const data = await model.find({ walletAddress : address})
+	const newSyrupVal = data[0].syrups;
+	newSyrupVal+= 8;
+
+	await model.updateOne(
+		{ walletAddress: walletAdd },
+		{ $set: { syrups: newSyrupVal } }
+	)
+	return res.json({ status: 'ok' })
+}catch(err){
+	console.log(err);
+	res.json({ status: 'error', error: err })
+}
+})
+
 
 app.listen(port);
 console.log('Server started at http://localhost:' + port);
