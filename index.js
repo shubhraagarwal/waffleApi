@@ -88,20 +88,6 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     }
 } )
 
-// Balance Fetching
-// app.get('/api/v1/fetchBal', async (req, res) => {
-// 	const id = req.headers['x-access-discord']
-
-// 	try {
-// 		const user = await model.findOne({ discordID: id })
-
-// 		return res.json({ code: '200' , status: 'ok', balance: user.balance })
-// 	} catch (error) {
-// 		console.log(error)
-// 		res.json({ code: '400' , status: 'error', error: 'invalid header' })
-// 	}
-// })
-
 app.post('/api/v1/users/getUser' , async (req,res) => {
 	console.log("searching for user");
 	const address = req.body.walletAddress
