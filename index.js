@@ -38,23 +38,23 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.second = 1;
+rule.hour = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
 	winners = await  model.find( {won : false}).limit(10)
 
 	console.log(winners[0]._id);
-
-	// winners.map(x => {
-	// 	await model.updateOne(
-	// 		{ _id: x._id },
-	// 		{ $set: { won: true } }
-	// 	)
-	// })
-
 });
-
+// async function asyncCall(){
+// 	winners.map(x => {
+// 		await model.updateOne(
+// 			{ _id: x._id },
+// 			{ $set: { won: true } }
+// 		)
+// 	})
+// }
+// asyncCall();
 
 // Creating account
 app.post('/api/v1/users/addUser' , async (req,res) =>{
