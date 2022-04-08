@@ -3,13 +3,15 @@ const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
 const app = express();
-const port = 1337; // PORT dekh-liyo
+const dotenv = require('dotenv');
+dotenv.config();
+const port = process.env.PORT; // PORT dekh-liyo
 const model = require('./model.model') ; 
 const cors = require('cors')
 const cron = require("node-cron");
 const schedule = require('node-schedule');
 
-mongoose.connect('mongodb+srv://waffleAdmin:waffle@cluster0.pfylc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
