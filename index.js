@@ -27,8 +27,12 @@ db.once("open", () => {
 // walletAddress: 
 // discord_id, required: false
 
-app.use(cors());
-app.use(express.json())
+app.use((req,res,next)=>{
+    res.setHeader('Acces-Control-Allow-Origin','*');
+    res.setHeader('Acces-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE');
+    res.setHeader('Acces-Contorl-Allow-Methods','Content-Type','Authorization');
+    next(); 
+})
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
