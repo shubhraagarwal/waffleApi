@@ -27,12 +27,8 @@ db.once("open", () => {
 // walletAddress: 
 // discord_id, required: false
 
-app.use((req,res,next)=>{
-    res.setHeader('Acces-Control-Allow-Origin','*');
-    res.setHeader('Acces-Control-Allow-Methods','GET,POST,PUT,PATCH,DELETE');
-    res.setHeader('Acces-Contorl-Allow-Methods','Content-Type','Authorization');
-    next(); 
-})
+app.use(cors());
+app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
@@ -48,9 +44,15 @@ rule.hour = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
-	winners = await  model.find( {won : false}).limit(10)
+	winners = await  model.aggregate([
+		// {$match: {won : 1}},
+		{$sample: {size: 10}}
+	], 
+	// function(err, docs) {
+	// 	console.log(docs);
+	// }
+	);
 
-	console.log(winners[0]._id);
 });
 // async function asyncCall(){
 // 	winners.map(x => {
@@ -101,6 +103,7 @@ app.post('/api/v1/users/getUser' , async (req,res) => {
 	try{
 		const data = await model.find({ walletAddress : address})
 		res.send(data);
+		console.log(data);
 		console.log("wallet and syrup count found");
 	}catch(e){
 		console.log("Failed to retrieve the Syrup Count: " + e);
