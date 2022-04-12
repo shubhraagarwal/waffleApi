@@ -1,0 +1,4 @@
+https://git.heroku.com/waffleapi.git
+https://git.heroku.com/waffleapi.git
+
+https://waffleapi.herokuapp.com/
