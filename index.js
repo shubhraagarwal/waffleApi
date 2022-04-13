@@ -28,10 +28,13 @@ db.once("open", () => {
 // discord_id, required: false
 
 app.use(cors({
-	allow_credentials=True,
-  allow_origins=['*', 'http://127.0.0.1:8080', 'http://127.0.0.1:8080/raffle?', 'http://127.0.0.1:8080/raffle'],
-  allow_methods=["*"],
-  allow_headers=["*"],
+// 	allow_credentials=True,
+//   allow_origins=['*', 'http://127.0.0.1:8080', 'http://127.0.0.1:8080/raffle?', 'http://127.0.0.1:8080/raffle'],
+//   allow_methods=["*"],
+//   allow_headers=["*"],
+	origin:'http://localhost:3000', 
+    credentials:true,            //access-control-allow-credentials:true
+    optionSuccessStatus:200
 }));
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -90,9 +93,9 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     try{
         const wallet = req.body.walletAddress
         const disc_id = req.body.discordid
-        await model.create({
-			walletAddress : wallet,
-			discord_id: disc_id
+        await model.updateOne(
+			{ walletAddress: wallet },
+			{ $set: { discord_id: disc_id }
 		})
 		res.json({ code: '200' , status: 'ok' , id: disc_id })
     }
@@ -128,21 +131,35 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	console.log("adding 8 to syrup count");
 	const walletAdd = req.body.walletAddress;
 	const entryTime = req.body.entryTime;
+	const data = await model.find({ walletAddress : walletAdd})
 
-	try{
-	const data = await model.find({ walletAddress : address})
-	const newSyrupVal = data[0].syrups;
-	newSyrupVal+= 8;
+	let ts = Number(entryTime)
+	
+	let dataTime = JSON.stringify(data[0].entryTime)
+	let dTime = Number(dataTime)
+	console.log(typeof ts);
+	console.log(dTime);
 
-	await model.updateOne(
-		{ walletAddress: walletAdd },
-		{ $set: { syrups: newSyrupVal } }
-	)
-	return res.json({ status: 'ok' })
-}catch(err){
-	console.log(err);
-	res.json({ status: 'error', error: err })
-}
+	if((ts - dTime) > 86400){
+		try{
+	
+			let newSyrupVal = data[0].syrups;
+			newSyrupVal+= 8;
+		
+			await model.updateOne(
+				{ walletAddress: walletAdd },
+				{ $set: { syrups: newSyrupVal } }
+			)
+			return res.json({ status: 'ok' })
+		}catch(err){
+			console.log(err);
+			res.json({ status: 'error', error: err })
+		}
+	}else{
+		res.json({status :"Failed" , message : "You are too early"})
+	}
+
+
 })
 
 
