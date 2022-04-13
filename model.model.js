@@ -6,6 +6,7 @@ const User = new mongoose.Schema(
 		discord_id: { type: String , default: ''},
 		syrups: { type: Number, default: 0},
 		won: {type: Boolean, default: false},
+		entryTime : {type: Number, default:1449828713}
 	},
 	{ collection: 'shubhraBhaiKaData' }
 )
