@@ -28,9 +28,10 @@ db.once("open", () => {
 // discord_id, required: false
 
 app.use(cors({
-    origin:'http://localhost:3000', 
-    credentials:true,            //access-control-allow-credentials:true
-    optionSuccessStatus:200
+	allow_credentials=True,
+  allow_origins=['*', 'http://127.0.0.1:8080', 'http://127.0.0.1:8080/raffle?', 'http://127.0.0.1:8080/raffle'],
+  allow_methods=["*"],
+  allow_headers=["*"],
 }));
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }));
