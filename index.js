@@ -54,7 +54,7 @@ schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
 	winners = await  model.aggregate([
 		// {$match: {won : 1}},
-		{$sample: {size: 3}}
+		{$sample: {size: 10}}
 	], 
 	// function(err, docs) {
 	// 	console.log(docs);
@@ -95,7 +95,8 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
         const disc_id = req.body.discordid
         await model.create(
 			{ walletAddress: wallet ,
-			 discord_id: disc_id 
+			 discord_id: disc_id,
+			 hasDiscord: true
 		})
 		console.log("acc created");
 		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "success"})
@@ -125,8 +126,8 @@ app.get('/api/v1/users/getAllWinner', async (req,res) => {
 		res.json(null)
 	}else{
 		console.log(winners);
-		let win = winners[0].walletAddress + " " + winners[1].walletAddress + " " + winners[2].walletAddress
-		let arr = win.split(" ");
+		let win = winners[0].discord_id + " " + winners[1].discord_id + " " + winners[2].discord_id + " " + winners[3].discord_id + " " + winners[4].discord_id + " " + winners[5].discord_id + " " + winners[6].discord_id + " " + winners[7].discord_id + " " + winners[8].discord_id  + " " + winners[9].discord_id
+	   	let arr = win.split(" ");
 	
 		let obj = Object.assign({}, arr);
 		console.log(obj);
