@@ -7,9 +7,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 const port = process.env.PORT; // PORT dekh-liyo
 const model = require('./model.model') ; 
+const winnerModel = require('./winnerModel.model')
 const cors = require('cors')
 const cron = require("node-cron");
 const schedule = require('node-schedule');
+const res = require('express/lib/response');
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -48,11 +50,11 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.second = 0;
+rule.hour = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
-	winners = await  model.aggregate([
+	winners = await  winnerModel.aggregate([
 		// {$match: {won : 1}},
 		{$sample: {size: 10}}
 	], 
@@ -126,7 +128,7 @@ app.get('/api/v1/users/getAllWinner', async (req,res) => {
 		res.json(null)
 	}else{
 		console.log(winners);
-		let win = winners[0].discord_id + " " + winners[1].discord_id + " " + winners[2].discord_id + " " + winners[3].discord_id + " " + winners[4].discord_id + " " + winners[5].discord_id + " " + winners[6].discord_id + " " + winners[7].discord_id + " " + winners[8].discord_id  + " " + winners[9].discord_id
+		let win = winners[0].discord_id + " " + winners[1].discord_id + " " + winners[2].discord_id   + " " + winners[3].discord_id + " " + winners[4].discord_id + " " + winners[5].discord_id + " " + winners[6].discord_id + " " + winners[7].discord_id + " " + winners[8].discord_id  + " " + winners[9].discord_id
 	   	let arr = win.split(" ");
 	
 		let obj = Object.assign({}, arr);
@@ -167,6 +169,36 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 		res.json({status :"Failed" , message : "You are too early"})
 	}
 
+
+})
+
+//Entering Waffle
+app.post('/api/v1/users/enterWaffle' , async(req, res)=> {
+	const walletAdd = req.body.walletAddress
+	const disc_id = req.body.discord_id
+	const syrups = req.body.syrups
+
+	try{
+        const wallet = req.body.walletAddress
+        const disc_id = req.body.discordid
+        await winnerModel.create(
+			{ walletAddress: wallet ,
+			 discord_id: disc_id,
+			 hasDiscord: true,
+			 syrups: syrups
+		})
+
+		await model.updateOne(
+			{ walletAddress : wallet },
+			{ $set: { syrups: syrups } }
+		)
+
+		console.log("acc added for whitelisting");
+		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "whitelisted"})
+    }
+    catch(err){
+        res.json({ code: '400' , status: 'error', error: 'error' })
+    }
 
 })
 
