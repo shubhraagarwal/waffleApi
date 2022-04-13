@@ -156,7 +156,7 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 			res.json({ status: 'error', error: err })
 		}
 	}else{
-		res.json({status :"You are too early"})
+		res.json({status :"Failed" , message : "You are too early"})
 	}
 
 
