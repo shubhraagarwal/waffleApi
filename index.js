@@ -48,13 +48,13 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.hour = 0;
+rule.second = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
 	winners = await  model.aggregate([
 		// {$match: {won : 1}},
-		{$sample: {size: 10}}
+		{$sample: {size: 3}}
 	], 
 	// function(err, docs) {
 	// 	console.log(docs);
@@ -78,9 +78,9 @@ app.post('/api/v1/users/addUser' , async (req,res) =>{
 	const wallet = req.body.walletAddress;
     try {
 		
-		await model.create({
-			walletAddress: wallet
-		})
+		// await model.create({
+		// 	walletAddress: wallet
+		// })
 		res.json({ status: 'ok' })
 	} catch (err) {
 		res.json({ status: 'error', error: 'Duplicate address' })
@@ -88,16 +88,17 @@ app.post('/api/v1/users/addUser' , async (req,res) =>{
 })
 
 
-// Entering Discord Id
+// Entering Discord Id and creating acc
 app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     try{
         const wallet = req.body.walletAddress
         const disc_id = req.body.discordid
-        await model.updateOne(
-			{ walletAddress: wallet },
-			{ $set: { discord_id: disc_id }
+        await model.create(
+			{ walletAddress: wallet ,
+			 discord_id: disc_id 
 		})
-		res.json({ code: '200' , status: 'ok' , id: disc_id })
+		console.log("acc created");
+		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "success"})
     }
     catch(err){
         res.json({ code: '400' , status: 'error', error: 'error' })
@@ -123,7 +124,13 @@ app.get('/api/v1/users/getAllWinner', async (req,res) => {
 	if(winners === null){
 		res.json(null)
 	}else{
-		res.send(winners);
+		console.log(winners);
+		let win = winners[0].walletAddress + " " + winners[1].walletAddress + " " + winners[2].walletAddress
+		let arr = win.split(" ");
+	
+		let obj = Object.assign({}, arr);
+		console.log(obj);
+		res.json(obj)
 	}
 })
  
@@ -140,11 +147,11 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	console.log(typeof ts);
 	console.log(dTime);
 
-	if((ts - dTime) > 86400){
+	if((ts - dTime) > 43200){
 		try{
 	
 			let newSyrupVal = data[0].syrups;
-			newSyrupVal+= 8;
+			newSyrupVal+= 4;
 		
 			await model.updateOne(
 				{ walletAddress: walletAdd },
