@@ -50,7 +50,7 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.second = 0;
+rule.hour = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
