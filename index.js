@@ -155,12 +155,16 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	
 			let newSyrupVal = data[0].syrups;
 			newSyrupVal+= 4;
-		
+
+						
 			await model.updateOne(
 				{ walletAddress: walletAdd },
-				{ $set: { syrups: newSyrupVal } }
+				{ $set: { syrups: newSyrupVal } },
+				{$set : {entryTime: ts}}
 			)
 			return res.json({ status: 'ok' })
+
+
 		}catch(err){
 			console.log(err);
 			res.json({ status: 'error', error: err })
@@ -187,7 +191,7 @@ app.post('/api/v1/users/enterWaffle' , async(req, res)=> {
 			 hasDiscord: true,
 			 syrups: syrups
 		})
-
+		
 		await model.updateOne(
 			{ walletAddress : wallet },
 			{ $set: { syrups: syrups } }
@@ -197,7 +201,7 @@ app.post('/api/v1/users/enterWaffle' , async(req, res)=> {
 		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "whitelisted"})
     }
     catch(err){
-        res.json({ code: '400' , status: 'error', error: 'error' })
+        res.json({ code: '400' , status: 'error', error: err })
     }
 
 })
