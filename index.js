@@ -138,12 +138,12 @@ app.get('/api/v1/users/getAllWinner', async (req,res) => {
 })
  
 app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
-	console.log("adding 8 to syrup count");
+	console.log("adding 4 to syrup count");
 	const walletAdd = req.body.walletAddress;
 	const entryTime = req.body.entryTime;
 	const data = await model.find({ walletAddress : walletAdd})
-
-	let ts = Number(entryTime)
+	console.log(data)
+	let ts = 1649828713
 	
 	let dataTime = JSON.stringify(data[0].entryTime)
 	let dTime = Number(dataTime)
@@ -160,8 +160,13 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 			await model.updateOne(
 				{ walletAddress: walletAdd },
 				{ $set: { syrups: newSyrupVal } },
-				{$set : {entryTime: ts}}
+				
 			)
+			await model.updateOne(
+				{walletAddress : walletAdd},
+				{$set : {entryTime : ts}}
+				
+				)
 			return res.json({ status: 'ok' })
 
 
