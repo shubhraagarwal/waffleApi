@@ -143,7 +143,7 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	const entryTime = req.body.entryTime;
 	const data = await model.find({ walletAddress : walletAdd})
 	console.log(data)
-	let ts = 1649828713
+	let ts = Number(entryTime)
 	
 	let dataTime = JSON.stringify(data[0].entryTime)
 	let dTime = Number(dataTime)
