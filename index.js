@@ -150,7 +150,7 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	console.log(typeof ts);
 	console.log(dTime);
 
-	if((ts - dTime) > 43200){
+	if((ts - dTime) > 43200000){
 		try{
 	
 			let newSyrupVal = data[0].syrups;
