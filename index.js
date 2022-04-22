@@ -12,6 +12,7 @@ const cors = require('cors')
 const cron = require("node-cron");
 const schedule = require('node-schedule');
 const res = require('express/lib/response');
+const proxy = require('./proxyModel.model');
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -85,7 +86,7 @@ app.post('/api/v1/users/addUser' , async (req,res) =>{
 		// })
 		res.json({ status: 'ok' })
 	} catch (err) {
-		res.json({ status: 'error', error: 'Duplicate address' })
+		res.json({ status: 'error', error: err })
 	}
 })
 
@@ -95,8 +96,13 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     try{
         const wallet = req.body.walletAddress
         const disc_id = req.body.discordid
-        await model.create(
-			{ walletAddress: wallet ,
+        await proxy.create({
+			walletAddress: wallet,
+			discord_id: disc_id,
+		})
+		
+		await model.create({ 
+			 walletAddress: wallet ,
 			 discord_id: disc_id,
 			 hasDiscord: true
 		})
@@ -104,7 +110,7 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
 		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "success"})
     }
     catch(err){
-        res.json({ code: '400' , status: 'error', error: 'error' })
+        res.json({ code: '400' , status: 'error', error: err , message: "Duplicate discord/wallet address" })
     }
 } )
 
@@ -150,7 +156,7 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	console.log(typeof ts);
 	console.log(dTime);
 
-	if((ts - dTime) > 43200){
+	if((ts - dTime) > 43200000){
 		try{
 	
 			let newSyrupVal = data[0].syrups;
