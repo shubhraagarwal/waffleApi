@@ -79,14 +79,16 @@ schedule.scheduleJob(rule, async function(){
 app.post('/api/v1/users/addUser' , async (req,res) =>{
     console.log(req.body)
 	const wallet = req.body.walletAddress;
+	const disc_id = req.body.discordid;
     try {
 		
 		// await model.create({
 		// 	walletAddress: wallet
 		// })
-		res.json({ status: 'ok' })
+		
+		res.json({ status: 'ok' , message : "success" })
 	} catch (err) {
-		res.json({ status: 'error', error: err })
+		res.json({ status: 'error', error: err , message : "Duplicate Wallet address" })
 	}
 })
 
@@ -96,11 +98,13 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     try{
         const wallet = req.body.walletAddress
         const disc_id = req.body.discordid
-        await proxy.create({
+
+		await proxy.create({
 			walletAddress: wallet,
 			discord_id: disc_id,
 		})
 		
+       
 		await model.create({ 
 			 walletAddress: wallet ,
 			 discord_id: disc_id,
@@ -110,7 +114,7 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
 		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "success"})
     }
     catch(err){
-        res.json({ code: '400' , status: 'error', error: err , message: "Duplicate discord/wallet address" })
+        res.json({ code: '400' , status: 'error', error: err , message: "Duplicate discord" })
     }
 } )
 
