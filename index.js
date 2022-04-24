@@ -152,8 +152,6 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	const entryTime = req.body.entryTime;
 	const data = await model.find({ walletAddress : walletAdd})
 	console.log(data)
-	let ts = entryTime
-	let dTime = data[0].entryTime
 
 		try{
 	
@@ -163,7 +161,7 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 			await model.updateOne(
 				{ walletAddress: walletAdd },
 				{ $set: { syrups: newSyrupVal }},
-        // {$set : {entryTime : entryTime} },
+        {$set : {entryTime : entryTime} },
 				
 			)
 			await model.updateOne(
