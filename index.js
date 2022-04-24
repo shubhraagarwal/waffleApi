@@ -161,7 +161,7 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 			await model.updateOne(
 				{ walletAddress: walletAdd },
 				{ $set: { syrups: newSyrupVal }},
-        {$set : {entryTime : entryTime} },
+        // {$set : {entryTime : entryTime} },
 				
 			)
 			await model.updateOne(
