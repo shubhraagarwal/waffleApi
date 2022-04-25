@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const User = new mongoose.Schema(
 	{
-		discord_id: { type: String , required: true ,default: " ", unique: true},
+		discord_id: { type: String , required: true , unique: true},
 		walletAddress: { type: String, required: true},
 		syrups: { type: Number, default: 0},
 		won: {type: Boolean, default: false},

@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const proxyUser = new mongoose.Schema(
 	{
-		discord_id: { type: String , required: true ,default: " "},
+		discord_id: { type: String , required: true },
 		walletAddress: { type: String, required: true, unique: true},
 		syrups: { type: Number, default: 0},
 		won: {type: Boolean, default: false},
