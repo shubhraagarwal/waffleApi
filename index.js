@@ -1,3 +1,4 @@
+
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -35,7 +36,7 @@ app.use(cors({
 //   allow_origins=['*', 'http://127.0.0.1:8080', 'http://127.0.0.1:8080/raffle?', 'http://127.0.0.1:8080/raffle'],
 //   allow_methods=["*"],
 //   allow_headers=["*"],
-	origin:'http://localhost:3000', 
+		origin:["https://waffleclicker.netlify.app/raffle","https://waffleclicker.netlify.app",'http://localhost:3000', "http://localhost:3000/raffle"],  
     credentials:true,            //access-control-allow-credentials:true
     optionSuccessStatus:200
 }));
@@ -83,7 +84,8 @@ app.post('/api/v1/users/addUser' , async (req,res) =>{
     try {
 		
 		// await model.create({
-		// 	walletAddress: wallet
+		// 	walletAddress: wallet,
+  //     entryTime: "1440799024"
 		// })
 		
 		res.json({ status: 'ok' , message : "success" })
@@ -96,6 +98,7 @@ app.post('/api/v1/users/addUser' , async (req,res) =>{
 // Entering Discord Id and creating acc
 app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
     try{
+      console.log(req.body)
         const wallet = req.body.walletAddress
         const disc_id = req.body.discordid
 
@@ -103,6 +106,7 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
 			walletAddress: wallet,
 			discord_id: disc_id,
 		})
+		console.log("acc created");
 		
        
 		await model.create({ 
@@ -110,23 +114,24 @@ app.post('/api/v1/users/addDiscordId' , async (req,res)=>{
 			 discord_id: disc_id,
 			 hasDiscord: true
 		})
-		console.log("acc created");
 		res.json({ code: '200' , status: 'ok' , id: disc_id , message: "success"})
     }
     catch(err){
+
         res.json({ code: '400' , status: 'error', error: err , message: "Duplicate discord" })
+
     }
 } )
 
 app.post('/api/v1/users/getUser' , async (req,res) => {
-	console.log("searching for user");
+	// console.log("searching for user");
 	const address = req.body.walletAddress
 
 	try{
 		const data = await model.find({ walletAddress : address})
 		res.send(data);
-		console.log(data);
-		console.log("wallet and syrup count found");
+		// console.log(data);
+		// console.log("wallet and syrup count found");
 	}catch(e){
 		console.log("Failed to retrieve the Syrup Count: " + e);
 	}
@@ -153,40 +158,32 @@ app.post('/api/v1/users/addViewsOfWaffleCount', async(req, res) => {
 	const entryTime = req.body.entryTime;
 	const data = await model.find({ walletAddress : walletAdd})
 	console.log(data)
-	let ts = Number(entryTime)
-	
-	let dataTime = JSON.stringify(data[0].entryTime)
-	let dTime = Number(dataTime)
-	console.log(typeof ts);
-	console.log(dTime);
 
-	if((ts - dTime) > 43200000){
 		try{
 	
 			let newSyrupVal = data[0].syrups;
 			newSyrupVal+= 4;
-
 						
 			await model.updateOne(
 				{ walletAddress: walletAdd },
-				{ $set: { syrups: newSyrupVal } },
+				{ $set: { syrups: newSyrupVal }},
+        // {$set : {entryTime : entryTime} },
 				
 			)
 			await model.updateOne(
 				{walletAddress : walletAdd},
-				{$set : {entryTime : ts}}
-				
-				)
-			return res.json({ status: 'ok' })
+        {$set : {entryTime : entryTime}})
+      const updatedData = await model.find({ walletAddress : walletAdd})
+	  console.log(entryTime,'inside try',updatedData)
+    res.send(updatedData);
 
 
 		}catch(err){
 			console.log(err);
+      console.log("inside catch")
 			res.json({ status: 'error', error: err })
 		}
-	}else{
-		res.json({status :"Failed" , message : "You are too early"})
-	}
+	
 
 
 })
