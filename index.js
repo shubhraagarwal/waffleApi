@@ -13,6 +13,7 @@ const cron = require("node-cron");
 const schedule = require('node-schedule');
 const res = require('express/lib/response');
 const proxy = require('./proxyModel.model');
+const victors = require('./list.model')
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -63,6 +64,9 @@ schedule.scheduleJob(rule, async function(){
 	// 	console.log(docs);
 	// }
 	);
+
+	// for emptying the collection after winners are decided:
+	await winnerModel.deleteMany({});
 
 });
 // async function asyncCall(){
@@ -133,13 +137,14 @@ app.get('/api/v1/users/getAllWinner', async (req,res) => {
 	if(winners === null){
 		res.json(null)
 	}else{
-		console.log(winners);
+		console.log(winners[0].discord_id);
 		let win = winners[0].discord_id + " " + winners[1].discord_id + " " + winners[2].discord_id   + " " + winners[3].discord_id + " " + winners[4].discord_id + " " + winners[5].discord_id + " " + winners[6].discord_id + " " + winners[7].discord_id + " " + winners[8].discord_id  + " " + winners[9].discord_id
 	   	let arr = win.split(" ");
 	
 		let obj = Object.assign({}, arr);
 		console.log(obj);
 		res.json(obj)
+	//	res.json("INSIDE WINNER SENDEr")
 	}
 })
  
@@ -215,6 +220,12 @@ app.post('/api/v1/users/enterWaffle' , async(req, res)=> {
         res.json({ code: '400' , status: 'error', error: err })
     }
 
+})
+
+app.get('/api/v1/users/entrylist' , async (req,res) => {
+	const list = await winnerModel.find()
+
+	res.json(list)
 })
 
 
