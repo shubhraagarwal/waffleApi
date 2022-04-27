@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.hour = 0;
+rule.second = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
@@ -64,9 +64,25 @@ schedule.scheduleJob(rule, async function(){
 	// 	console.log(docs);
 	// }
 	);
+		try{
+			await victors.create({
+			discord_id0: winners[0].discord_id ,
+			discord_id1: winners[1].discord_id,
+			discord_id2: winners[2].discord_id,
+			discord_id3 : winners[3].discord_id,
+			discord_id4:winners[4].discord_id,
+			discord_id5:winners[5].discord_id,
+			discord_id6:winners[6].discord_id,
+			discord_id7:winners[7].discord_id,
+			discord_id8:winners[8].discord_id,
+			discord_id9: winners[9].discord_id,
+			})
 
+		}catch(e) {
+			console.log(e);
+		}
 	// for emptying the collection after winners are decided:
-	await winnerModel.deleteMany({});
+//	await winnerModel.deleteMany({});
 
 });
 // async function asyncCall(){
@@ -134,17 +150,18 @@ app.post('/api/v1/users/getUser' , async (req,res) => {
 
 // Winner Selection
 app.get('/api/v1/users/getAllWinner', async (req,res) => {
-	if(winners === null){
-		res.json(null)
-	}else{
-		console.log(winners[0].discord_id);
-		let win = winners[0].discord_id + " " + winners[1].discord_id + " " + winners[2].discord_id   + " " + winners[3].discord_id + " " + winners[4].discord_id + " " + winners[5].discord_id + " " + winners[6].discord_id + " " + winners[7].discord_id + " " + winners[8].discord_id  + " " + winners[9].discord_id
-	   	let arr = win.split(" ");
+	try{
+		let job = await victors.find().sort({_id:-1}).limit(1)
+		// console.log(winners[0].discord_id);
+		// let win = winners[0].discord_id + " " + winners[1].discord_id + " " + winners[2].discord_id   + " " + winners[3].discord_id + " " + winners[4].discord_id + " " + winners[5].discord_id + " " + winners[6].discord_id + " " + winners[7].discord_id + " " + winners[8].discord_id  + " " + winners[9].discord_id
+	   	// let arr = win.split(" ");
 	
-		let obj = Object.assign({}, arr);
-		console.log(obj);
-		res.json(obj)
+		// let obj = Object.assign({}, arr);
+		console.log(job);
+		res.json(job)
 	//	res.json("INSIDE WINNER SENDEr")
+	}catch(e){
+		console.log(e);
 	}
 })
  
