@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
 
 let winners = null;
 const rule = new schedule.RecurrenceRule();
-rule.second = 0;
+rule.hour = 0;
 rule.tz = 'Etc/UTC';
 schedule.scheduleJob(rule, async function(){
 	console.log("node-schedule working");
@@ -82,7 +82,7 @@ schedule.scheduleJob(rule, async function(){
 			console.log(e);
 		}
 	// for emptying the collection after winners are decided:
-//	await winnerModel.deleteMany({});
+	await winnerModel.deleteMany({});
 
 });
 // async function asyncCall(){
