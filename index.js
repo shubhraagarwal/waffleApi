@@ -6,7 +6,7 @@ const bodyParser = require('body-parser')
 const app = express();
 const dotenv = require('dotenv');
 dotenv.config();
-const port = process.env.PORT; // PORT dekh-liyo
+const port = process.env.PORT || 3000; // PORT dekh-liyo
 const model = require('./model.model') ; 
 const winnerModel = require('./winnerModel.model')
 const cors = require('cors')
@@ -15,6 +15,7 @@ const schedule = require('node-schedule');
 const res = require('express/lib/response');
 const proxy = require('./proxyModel.model');
 const victors = require('./list.model')
+var MongoClient = require('mongodb').MongoClient;
 
 mongoose.connect(process.env.MONGO_URL, {
     useNewUrlParser: true,
@@ -97,6 +98,7 @@ schedule.scheduleJob(rule, async function(){
 // asyncCall();
 
 // Creating account
+
 app.post('/api/v1/users/addUser' , async (req,res) =>{
     console.log(req.body)
 	const wallet = req.body.walletAddress;
@@ -155,6 +157,21 @@ app.post('/api/v1/users/getUser' , async (req,res) => {
 	}catch(e){
 		console.log("Failed to retrieve the Syrup Count: " + e);
 	}
+})
+
+//Fetch all users Database
+app.get('/api/v1/users/getAllUser' , async (req,res) => {
+	// console.log("searching for user");
+	MongoClient.connect('mongodb+srv://waffleAdmin:waffle@cluster0.pfylc.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', function(err, db) {
+	if (err) throw err;
+	var dbo = db.db("myFirstDatabase");
+	dbo.collection("shubhraBhaiKaData").find({}).toArray(function(err, result) {
+	  if (err) throw err;
+	  res.send(result)
+	  db.close();
+	});
+});
+
 })
 
 // Winner Selection
