@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 
 const Winner = new mongoose.Schema(
 	{
-		walletAddress: { type: String, required: true, unique: true },
-		discord_id: { type: String , default: '' , unique:true},
+		walletAddress: { type: String, required: true},
+		discord_id: { type: String , default: '' },
 		syrups: { type: Number},
 		won: {type: Boolean, default: false},
 		hasDiscord: {type: Boolean} 
